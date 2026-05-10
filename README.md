@@ -1,74 +1,141 @@
-<Window x:Class="CybersecurityChatbot.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Cybersecurity Chatbot" Height="450" Width="800"
-        Background="#1E1E1E">
+using System;
+using System.Speech.Synthesis;
+using System.Windows;
+using CybersecurityChatbot;
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="180"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+namespace Part2_3
+{
+    public partial class MainWindow : Window
+    {
+        private Chatbot bot = new Chatbot();
 
-        <!-- Left Panel - Buttons -->
-        <StackPanel Grid.Column="0" 
-                    Background="#2D2D30" 
-                    Margin="5">
-            
-            <Button Content="Switch Persona"
-                    Height="50"
-                    Margin="5"
-                    Background="#3E3E42"
-                    Foreground="White"
-                    BorderThickness="0"/>
-            
-            <Button Content="Switch Voice"
-                    Height="50"
-                    Margin="5"
-                    Background="#3E3E42"
-                    Foreground="White"
-                    BorderThickness="0"/>
-            
-            <Button Content="Change Theme"
-                    Height="50"
-                    Margin="5"
-                    Background="#3E3E42"
-                    Foreground="White"
-                    BorderThickness="0"/>
-            
-            <Button Content="Help"
-                    Height="50"
-                    Margin="5"
-                    Background="#3E3E42"
-                    Foreground="White"
-                    BorderThickness="0"/>
-        </StackPanel>
+        private SpeechSynthesizer speaker = new SpeechSynthesizer();
 
-        <!-- Right Panel - Chat Area -->
-        <Grid Grid.Column="1" Margin="5">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="50"/>
-            </Grid.RowDefinitions>
+        private string userName = "";
 
-            <!-- Chat Display -->
-            <TextBlock Grid.Row="0"
-                       Text="Bot: Hello! What is your name?"
-                       Foreground="White"
-                       FontSize="14"
-                       Background="#2D2D30"
-                       Padding="10"
-                       TextWrapping="Wrap"/>
+        private string currentPersona = "Friendly";
 
-            <!-- Input Area -->
-            <TextBox Grid.Row="1"
-                     Height="50"
-                     Background="#3E3E42"
-                     Foreground="White"
-                     BorderThickness="0"
-                     FontSize="14"
-                     Padding="10,0"
-                     VerticalContentAlignment="Center"/>
-        </Grid>
-    </Grid>
-</Window>
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            // Button events
+            PersonaButton.Click += PersonaButton_Click;
+            VoiceButton.Click += VoiceButton_Click;
+
+            // Startup speech
+            speaker.SpeakAsync("Speech system activated");
+        }
+
+        // START CHAT BUTTON
+        private void StartChat_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(NameBox.Text))
+                {
+                    MessageBox.Show("Please enter your name.");
+                    return;
+                }
+
+                userName = NameBox.Text;
+
+                // Hide name screen
+                NamePanel.Visibility = Visibility.Hidden;
+
+                // Show chat screen
+                ChatPanel.Visibility = Visibility.Visible;
+
+                string welcome =
+                    $"Hello {userName}! Welcome to the Cybersecurity Awareness Chatbot.";
+
+                ChatBox.Items.Add("Bot: " + welcome);
+
+                speaker.SpeakAsyncCancelAll();
+                speaker.SpeakAsync(welcome);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error starting chat.");
+            }
+        }
+
+        // SEND BUTTON
+        private void Send_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string input = InputBox.Text;
+
+                if (string.IsNullOrWhiteSpace(input))
+                    return;
+
+                ChatBox.Items.Add("You: " + input);
+
+                string response = bot.GetResponse(input, userName);
+
+                // Persona effect
+                if (currentPersona == "Serious")
+                {
+                    response = "Security Notice: " + response;
+                }
+
+                ChatBox.Items.Add("Bot: " + response);
+
+                // Speak response
+                speaker.SpeakAsyncCancelAll();
+                speaker.SpeakAsync(response);
+
+                InputBox.Clear();
+            }
+            catch (Exception)
+            {
+                ChatBox.Items.Add("Bot: Something went wrong.");
+            }
+        }
+
+        // PERSONA BUTTON
+        private void PersonaButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentPersona == "Friendly")
+            {
+                currentPersona = "Serious";
+
+                ChatBox.Items.Add(
+                    "Bot: Persona changed to Serious Security Expert.");
+            }
+            else
+            {
+                currentPersona = "Friendly";
+
+                ChatBox.Items.Add(
+                    "Bot: Persona changed to Friendly Assistant.");
+            }
+        }
+
+        // VOICE BUTTON
+        private void VoiceButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (speaker.Voice.Name.Contains("David"))
+                {
+                    speaker.SelectVoiceByHints(VoiceGender.Female);
+
+                    ChatBox.Items.Add("Bot: Female voice activated.");
+                }
+                else
+                {
+                    speaker.SelectVoiceByHints(VoiceGender.Male);
+
+                    ChatBox.Items.Add("Bot: Male voice activated.");
+                }
+            }
+            catch
+            {
+                ChatBox.Items.Add(
+                    "Bot: Voice switching is not supported on this PC.");
+            }
+        }
+    }
+}
