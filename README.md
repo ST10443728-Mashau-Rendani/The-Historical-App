@@ -1,111 +1,74 @@
-<Window x:Class="Part2_3.MainWindow"
+<Window x:Class="CybersecurityChatbot.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Cybersecurity Chatbot"
-        Height="600"
-        Width="700">
+        Title="Cybersecurity Chatbot" Height="450" Width="800"
+        Background="#1E1E1E">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        <!-- NAME SCREEN -->
-        <Grid x:Name="NamePanel"
-              Background="White">
+        <!-- Left Panel - Buttons -->
+        <StackPanel Grid.Column="0" 
+                    Background="#2D2D30" 
+                    Margin="5">
+            
+            <Button Content="Switch Persona"
+                    Height="50"
+                    Margin="5"
+                    Background="#3E3E42"
+                    Foreground="White"
+                    BorderThickness="0"/>
+            
+            <Button Content="Switch Voice"
+                    Height="50"
+                    Margin="5"
+                    Background="#3E3E42"
+                    Foreground="White"
+                    BorderThickness="0"/>
+            
+            <Button Content="Change Theme"
+                    Height="50"
+                    Margin="5"
+                    Background="#3E3E42"
+                    Foreground="White"
+                    BorderThickness="0"/>
+            
+            <Button Content="Help"
+                    Height="50"
+                    Margin="5"
+                    Background="#3E3E42"
+                    Foreground="White"
+                    BorderThickness="0"/>
+        </StackPanel>
 
-            <StackPanel HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
+        <!-- Right Panel - Chat Area -->
+        <Grid Grid.Column="1" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
 
-                <TextBlock Text="Enter your name:"
-                           FontSize="18"
-                           Margin="0,0,0,10"
-                           HorizontalAlignment="Center"/>
+            <!-- Chat Display -->
+            <TextBlock Grid.Row="0"
+                       Text="Bot: Hello! What is your name?"
+                       Foreground="White"
+                       FontSize="14"
+                       Background="#2D2D30"
+                       Padding="10"
+                       TextWrapping="Wrap"/>
 
-                <TextBox x:Name="NameBox"
-                         Width="200"
-                         Height="30"
-                         Margin="0,0,0,10"/>
-
-                <Button Content="Start Chat"
-                        Width="200"
-                        Height="30"
-                        Click="StartChat_Click"/>
-            </StackPanel>
-
+            <!-- Input Area -->
+            <TextBox Grid.Row="1"
+                     Height="50"
+                     Background="#3E3E42"
+                     Foreground="White"
+                     BorderThickness="0"
+                     FontSize="14"
+                     Padding="10,0"
+                     VerticalContentAlignment="Center"/>
         </Grid>
-
-        <!-- CHAT SCREEN -->
-        <Grid x:Name="ChatPanel"
-              Visibility="Hidden"
-              Margin="10">
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="120"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <!-- SIDE PANEL -->
-            <StackPanel Grid.Column="0"
-                        Background="#2D2D30"
-                        Margin="0,0,10,0">
-
-                <Button x:Name="PersonaButton"
-                        Content="Switch Persona"
-                        Height="50"
-                        Margin="5"/>
-
-                <Button x:Name="VoiceButton"
-                        Content="Switch Voice"
-                        Height="50"
-                        Margin="5"/>
-
-                <Button x:Name="ThemeButton"
-                        Content="Change Theme"
-                        Height="50"
-                        Margin="5"/>
-
-                <Button x:Name="HelpButton"
-                        Content="Help"
-                        Height="50"
-                        Margin="5"/>
-            </StackPanel>
-
-            <!-- MAIN CHAT AREA -->
-            <Grid Grid.Column="1">
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <!-- CHAT BOX -->
-                <ListBox x:Name="ChatBox"
-                         Grid.Row="0"
-                         FontSize="14"
-                         Background="#1E1E1E"
-                         Foreground="White"/>
-
-                <!-- INPUT AREA -->
-                <StackPanel Grid.Row="1"
-                            Orientation="Horizontal"
-                            Margin="0,10,0,0">
-
-                    <TextBox x:Name="InputBox"
-                             Width="300"
-                             Height="35"
-                             FontSize="14"/>
-
-                    <Button Content="Send"
-                            Width="100"
-                            Height="35"
-                            Margin="10,0,0,0"
-                            Background="#007ACC"
-                            Foreground="White"
-                            Click="Send_Click"/>
-                </StackPanel>
-
-            </Grid>
-
-        </Grid>
-
     </Grid>
-
 </Window>
